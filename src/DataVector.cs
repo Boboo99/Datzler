@@ -50,7 +50,7 @@ namespace src
             ys = vdp.Select(dp => dp.Y).ToArray<double>();
         }
 
-        public DataVector GetAnomalies(double maxRaise)
+        public DataVector GetAnomaliesByRaise(double maxRaise)
         {
             //The idea is quite simple:
             //figure out the raise between two points if it greater than the allowed raise it's part of the Anomalies
@@ -67,18 +67,14 @@ namespace src
 
             for(int i = 0;i<_list.Count - 1;i++)
             {
+
                 if(Math.Abs(raise(_list[i],_list[i + 1])) > Math.Abs(maxRaise))
                 {
-                    if(raise(_list[i],_list[i + 1]) > 0)
-                        anomalies.Add(_list[i + 1]);
-                    if(raise(_list[i],_list[i + 1]) < 0)
-                        anomalies.Add(_list[i]);
+                    //the idea is to add the i + 1 point as an anomaly and then replace it by the reference point with a +1 x shift
+                    anomalies.Add(_list[i + 1]);
+                    _list[i + 1] = new DataPoint(_list[i].X + 1,_list[i].Y); //right shift
 
-                    //not enough, I have to look at t = 1, t = 2, t = 3
-                    //rise(ft1,ft2) > abs && rise(ft1,ft3) > abs => anomalie
                     //remove anomaly as reference point, therefore shift x so the next rise is good again
-
-                    
                 }
             }
 
